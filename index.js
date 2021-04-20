@@ -114,16 +114,9 @@ class Installer {
       .then(() => statAsync(
         path.join(this.prefix, 'node_modules')
       ).catch(err => { if (err.code !== 'ENOENT') { throw err } }))
-      .then(stat => {
-        stat && this.log.warn(
-          'prepare', 'removing existing node_modules/ before installation'
-        )
-        return BB.join(
-          this.checkLock(),
-          stat && rimraf(path.join(this.prefix, 'node_modules'))
-        )
-      }).then(() => {
+      .then(() => {
       // This needs to happen -after- we've done checkLock()
+        this.checkLock()
         this.tree = buildLogicalTree(this.pkg, this.pkg._shrinkwrap)
         this.log.silly('tree', this.tree)
         this.expectedTotal = 0
